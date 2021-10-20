@@ -45,7 +45,7 @@ long oldPulseTime = 0;
 int fanRPM = 0;
 char toneNote;
 
-int modeArray[] = {0, 1, 3, 6}; //adjust this array to modify sequence of modes - as written, change to {0, 1, 2, 3, 4, 5} to access all modes
+int modeArray[] = {0, 1, 3, 6, 7}; //adjust this array to modify sequence of modes - as written, change to {0, 1, 2, 3, 4, 5} to access all modes
 int inputModeIndex = 0;
 int modeArrayLength = (sizeof(modeArray) / sizeof(modeArray[0]));
 
@@ -189,7 +189,7 @@ if (inputMode == 3) FCPX();
 if (inputMode == 4) fan();
 if (inputMode == 5) music();
 if (inputMode == 6) textInput();
-
+if (inputMode == 7) browser();
 //Serial.println(inputMode);
 
 }
@@ -612,6 +612,100 @@ void textInput(){
   }
     screenTextInput();
 }
+void browser(){
+
+  if (increment == 1) { // scroll down
+        Mouse.move(0,0,-1); 
+        increment = 0;
+        decrement = 0;
+        //delay(10);
+      }
+      
+  if (decrement == 1) { // scroll up
+        Mouse.move(0,0,1);
+        increment = 0;
+        decrement = 0;
+        //delay(10);
+      }
+
+  if (SW1 == 0) { // move to top of page
+        Keyboard.press(KEY_LEFT_CTRL);
+        Keyboard.press(KEY_UP_ARROW);
+        Keyboard.releaseAll();
+        delay(50);
+  }
+  if (SW6 == 0){ //tab to next browser tab Firefox or Chrome
+        Keyboard.press(KEY_LEFT_CTRL);
+        Keyboard.press(KEY_TAB);          
+        Keyboard.releaseAll();
+        pixels.setPixelColor(4, pixels.Color(107, 0, 0));
+        pixels.show();
+        delay(50);
+      }
+  if (SW5 == 0){ //tab to previous browser tab Firefox or Chrome
+        Keyboard.press(KEY_LEFT_SHIFT);
+        Keyboard.press(KEY_LEFT_CTRL);
+        Keyboard.press(KEY_TAB);
+        Keyboard.releaseAll();
+        pixels.setPixelColor(3, pixels.Color(107, 0, 0));
+        pixels.show();
+        delay(50);
+      }
+  if (SW3 == 0) { // forward
+        Keyboard.press(KEY_LEFT_ALT);
+        Keyboard.press(KEY_RIGHT_ARROW);
+        Keyboard.releaseAll();
+        pixels.setPixelColor(1, pixels.Color(107, 0, 0));
+        pixels.show();
+        delay(50);
+      }
+  if (SW4 == 0) { // Close current tab
+        Keyboard.press(KEY_LEFT_CTRL);
+        Keyboard.press(KEY_W);
+        Keyboard.releaseAll();
+        pixels.setPixelColor(2, pixels.Color(107, 0, 0));
+        pixels.show();
+        delay(50);
+      }
+  if (SW2 == 0) { // back
+        Keyboard.press(KEY_LEFT_ALT);
+        Keyboard.press(KEY_LEFT_ARROW);
+        Keyboard.releaseAll();
+        pixels.setPixelColor(0, pixels.Color(107, 0, 0));
+        pixels.show();
+        delay(50);
+      }
+  if (SW7 == 0){ // cursor to search
+        Keyboard.press(KEY_LEFT_CTRL);
+        Keyboard.press(KEY_L);
+        Keyboard.releaseAll();
+        pixels.setPixelColor(5, pixels.Color(107, 0, 0));
+        pixels.show();
+        delay(50);
+  }
+  if (SW8 == 0){ // bookmark
+        Keyboard.press(KEY_LEFT_CTRL);
+        Keyboard.press(KEY_D);
+        Keyboard.releaseAll();
+        pixels.setPixelColor(6, pixels.Color(107, 0, 0));
+        pixels.show();
+        delay(50);
+  }
+  if (SW9 == 0) { //new tab
+        Keyboard.press(KEY_LEFT_CTRL);
+        Keyboard.press(KEY_T);
+        Keyboard.releaseAll();
+        pixels.setPixelColor(7, pixels.Color(107, 0, 0));
+        pixels.show();
+        delay(50);
+  }
+  for(int i=0; i<NUMPIXELS; i++){
+    pixels.setPixelColor(i, pixels.Color(19, 88, 107));
+  }
+  pixels.show(); // Show results
+      
+screenBrowser();
+}
 
 //======================.96" oled screen=======================
 
@@ -714,6 +808,23 @@ void screenTextInput(){
   display.println("Text");
   display.print("Input");
   display.display();
+}
+
+void screenBrowser(){
+  display.setTextSize(1); 
+  display.clearDisplay();
+  display.setCursor(0,0);
+  //display.println("");  
+  display.println("ENCOD|     |TAB+ |SER");
+  display.println("");
+  display.println("SCR- |SCR+ |TAB- |BOK");
+  display.println("");
+  display.println("BACK |FORW |CLOS |NEW");
+  display.println("");  
+  display.print("     Browser Mode");
+  display.display();
+  //Serial.println(SW1);
+  //delay(10);
 }
 
 //====================pixel helpers===============
